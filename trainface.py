@@ -11,9 +11,9 @@ from sklearn.model_selection import train_test_split
 # --- 設定 ---
 IMG_SIZE = 128
 DATASET = {
-    "japanese": "true_image_japanese",
-    "korean": "true_image_korean",
-    "chinese": "true_image_chinese"
+    "japanese": "expand_japanese_face",
+    "korean": "expand_korean_face",
+    "chinese": "expand_chinese_face"
 }
 
 def load_images():
@@ -72,4 +72,4 @@ def predict_nationality(img_path):
     return rev_label_map[idx], pred[idx]
 
 # --- 使い方例 ---
-# predict_nationality("test.jpg")
+predict_nationality("kim.jpg")
