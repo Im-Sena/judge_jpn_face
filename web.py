@@ -67,11 +67,11 @@ def predict_nationality(img):
     save_crop_path = os.path.join("input_image", "streamlit_input.jpg")
     img_face = crop_face(img, save_path=save_crop_path)
     if img_face is None:
-        return None, None
-    img_face = img_face.astype('float32') / 255.0
-    pred = model.predict(np.expand_dims(img_face, axis=0))[0]
+        return None, None, None
+    img_face_norm = img_face.astype('float32') / 255.0
+    pred = model.predict(np.expand_dims(img_face_norm, axis=0))[0]
     idx = np.argmax(pred)
-    return rev_label_map[idx], pred[idx]
+    return rev_label_map[idx], pred[idx], img_face  # ← 切り抜き画像も返す
 
 # --- Streamlit UI ---
 st.title("国籍判定AI（カメラ画像対応）")
@@ -83,8 +83,10 @@ if img_file is not None:
     file_bytes = np.asarray(bytearray(img_file.read()), dtype=np.uint8)
     img = cv2.imdecode(file_bytes, 1)
     st.image(img, caption="入力画像", channels="BGR")
-    label, score = predict_nationality(img)
+    label, score, face_img = predict_nationality(img)
     if label is not None:
         st.success(f"判定: {label}（確信度: {score:.2f}）")
+        # 切り抜き顔画像も表示
+        st.image(face_img, caption="切り抜き顔画像", channels="BGR")
     else:
         st.error("判定できませんでした")
